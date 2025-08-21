@@ -2,6 +2,7 @@ package com.gustavo.agendadortarefas.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +14,20 @@ import java.util.Date;
 @Service
 public class JwtUtil {
 
-    // Chave secreta usada para assinar e verificar tokens JWT
-    private final String secretKey = "N2x0QXpFZ1ZrM0p1ZUpTT0JzUllDdXltT3dKMktvT0g=";
+    private final SecretKey secretKey;
 
-    private SecretKey getSecretKey(){
-        byte[] key = Base64.getDecoder().decode(secretKey);
-        return Keys.hmacShaKeyFor(key);
+    public JwtUtil() {
+        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Gera uma chave secreta para o algoritmo HS256
     }
 
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .setSubject(username) // Define o nome de usuário como o assunto do token
+                .setIssuedAt(new Date()) // Define a data e hora de emissão do token
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Define a data e hora de expiração (1 hora a partir da emissão)
+                .signWith(secretKey) // Converte a chave secreta em bytes e assina o token com ela
+                .compact(); // Constrói o token JWT
+    }
 
     public Claims extractClaims(String token) {
         return Jwts.parser() // usa parserBuilder no lugar de parser()

@@ -1,9 +1,8 @@
-package com.gustavo.agendadortarefas.infrastructure.mapper;
+package com.gustavo.agendadortarefas.business.mapper;
 
-import com.gustavo.agendadortarefas.infrastructure.business.dto.TarefaDTO;
+import com.gustavo.agendadortarefas.business.dto.TarefaDTO;
 import com.gustavo.agendadortarefas.infrastructure.entity.TarefaEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.MapperConfig;
 
 import java.util.List;
 

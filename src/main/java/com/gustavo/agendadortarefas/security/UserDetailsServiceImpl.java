@@ -1,6 +1,6 @@
 package com.gustavo.agendadortarefas.security;
 
-import com.gustavo.agendadortarefas.infrastructure.business.dto.UsuarioDTO;
+import com.gustavo.agendadortarefas.business.dto.UsuarioDTO;
 import com.gustavo.agendadortarefas.infrastructure.client.UsuarioClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -13,7 +13,7 @@ public class UserDetailsServiceImpl {
     @Autowired
     private UsuarioClient client;
 
-    public UserDetails carregaDadosUsuario(String email, String token){
+    public UserDetails carregaDadosUsuario(String email, String token) {
 
         UsuarioDTO usuarioDTO = client.buscaUsuarioPorEmail(email, token);
         return User
