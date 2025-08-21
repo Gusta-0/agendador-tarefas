@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -26,23 +25,40 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // Configuração do filtro de segurança
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Cria uma instância do JwtRequestFilter com JwtUtil e UserDetailsService
-        JwtRequestFilter jwtRequestFilter = new JwtRequestFilter(jwtUtil, userDetailsService);
-
         http
-                .csrf(AbstractHttpConfigurer::disable) // Desativa proteção CSRF para APIs REST (não aplicável a APIs que não mantêm estado)
+                .csrf(AbstractHttpConfigurer::disable) // Desativa proteção CSRF para APIs REST
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().authenticated() // Requer autenticação para todas as outras requisições
+                        .anyRequest().permitAll() // Permite acesso a todas as requisições
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Configura a política de sessão como stateless (sem sessão)
-                )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // Adiciona o filtro JWT antes do filtro de autenticação padrão
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Mantém sem sessão (stateless)
+                );
 
-        // Retorna a configuração do filtro de segurança construída
         return http.build();
     }
+
+
+//    // Configuração do filtro de segurança
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        // Cria uma instância do JwtRequestFilter com JwtUtil e UserDetailsService
+//        JwtRequestFilter jwtRequestFilter = new JwtRequestFilter(jwtUtil, userDetailsService);
+//
+//        http
+//                .csrf(AbstractHttpConfigurer::disable) // Desativa proteção CSRF para APIs REST (não aplicável a APIs que não mantêm estado)
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .anyRequest().authenticated() // Requer autenticação para todas as outras requisições
+//                )
+//                .sessionManagement(session -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Configura a política de sessão como stateless (sem sessão)
+//                )
+//                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // Adiciona o filtro JWT antes do filtro de autenticação padrão
+//
+//        // Retorna a configuração do filtro de segurança construída
+//        return http.build();
+//    }
+
+
 }
